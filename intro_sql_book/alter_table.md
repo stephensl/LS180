@@ -239,3 +239,14 @@ ALTER TABLE orders
 #
 #
 #
+
+
+INSERT INTO player_scores (name, team, score) VALUES ('Julie', 'Red', 22);
+INSERT INTO player_scores (name, team, score) VALUES ('Mario', 'Gold', 18);
+INSERT INTO player_scores (name, team, score) VALUES ('Steve', 'Red', 25);
+INSERT INTO player_scores (name, team, score) VALUES ('Ruby', 'Blue', 30);
+INSERT INTO player_scores (name, team, score) VALUES ('Dolores', 'Blue', 19);
+INSERT INTO player_scores (name, team, score) VALUES ('Shawn', 'Gold', 27);
+INSERT INTO player_scores (name, team, score) VALUES ('Lucas', 'Red', 28);
+INSERT INTO player_scores (name, team, score) VALUES ('Ella', 'Gold', 24);
+INSERT INTO player_scores (name, team, score) VALUES ('Alberto', 'Blue', 21);
