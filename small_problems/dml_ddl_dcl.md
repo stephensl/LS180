@@ -111,5 +111,7 @@ CREATE SEQUENCE part_number_sequence;
 DDL as we are modifying the characteristics/attributes of the database by adding a sequence object to the database structure. All CREATE statements are generally thought of as DDL.
 
 ##
-##
-##
+## 
+```sql
+
+```

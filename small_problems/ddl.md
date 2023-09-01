@@ -16,27 +16,169 @@ planets table
   - designation: a single alphabetic character that uniquely identifies the planet in its star system ('a', 'b', 'c', etc.)
   - mass: estimated mass in terms of Jupiter masses; use an integer for this value.
 
-
 ```sql
 CREATE DATABASE extrasolar;
 
-\c extrasolar
+\c extrasolar 
 
 CREATE TABLE stars (
-  id serial PRIMARY KEY,
+  id serial PRIMARY KEY, 
   name varchar(25) UNIQUE NOT NULL,
-  distance integer NOT NULL CHECK (distance > 0),
+  distance int NOT NULL CHECK (distance > 0), 
   spectral_type char(1),
-  companions integer NOT NULL CHECK (companions >= 0)
+  companions int NOT NULL CHECK (companions >= 0)
 );
 
 CREATE TABLE planets (
   id serial PRIMARY KEY,
-  designation char(1) UNIQUE,
-  mass integer
+  designation char(1),
+  mass int
 );
 ```
 
-::::#########################################::::((2))::::##########################################::::
+##
 
-2. 
+2. You may have noticed that, when we created the `stars` and `planets` tables, we did not do anything to establish a relationship between the two tables. They are simply standalone tables that are related only by the fact that they both belong to the `extrasolar` database. However, there is no relationship between the rows of each table.
+
+To correct this problem, add a `star_id` column to the `planets` table; this column will be used to relate each planet in the `planets` table to its home star in the `stars` table. Make sure the column is defined in such a way that it is required and must have a value that is present as an id in the stars table.
+
+```sql
+ALTER TABLE planets
+ADD COLUMN star_id int NOT NULL REFERENCES stars (id);
+```
+
+#
+#
+
+3. 25 characters isn't enough room to store a star's complete name. For instance, the star "Epsilon Trianguli Australis A" requires 30 characters. Modify the column so that it allows star names as long as 50 characters.
+
+```sql
+ALTER TABLE stars
+ALTER COLUMN name
+TYPE varchar(50);
+```
+
+#
+#
+
+4. For many of the closest stars, we know the distance from Earth fairly accurately; for instance, Proxima Centauri is roughly 4.3 light years away. Our database, as currently defined, only allows integer distances, so the most accurate value we can enter is 4. Modify the distance column in the stars table so that it allows fractional light years to any degree of precision required.
+
+```sql
+ALTER TABLE stars
+ALTER COLUMN distance
+TYPE numeric;
+```
+
+#
+#
+
+5. The `spectral_type` column in the `stars` table is currently defined as a one-character string that contains one of the following 7 values: 'O', 'B', 'A', 'F', 'G', 'K', and 'M'. However, there is currently no enforcement on the values that may be entered. 
+
+Add a constraint to the table `stars` that will enforce the requirement that a row must hold one of the 7 listed values above. Also, make sure that a value is required for this column.
+
+
+```sql
+ALTER TABLE stars
+ADD CHECK (spectral_type IN ('O', 'B', 'A', 'F', 'G', 'K', 'M')),
+ALTER COLUMN spectral_type SET NOT NULL;
+```
+
+##
+
+6. In the previous exercise, we added a CHECK constraint to the stars table to enforce that the value stored in the spectral_type column for each row is valid. In this exercise, we will use an alternate approach to the same problem.
+
+PostgreSQL provides what is called an enumerated data type; that is, a data type that must have one of a finite set of values. For instance, a traffic light can be red, green, or yellow: these are enumerate values for the color of the currently lit signal light.
+
+Modify the stars table to remove the CHECK constraint on the spectral_type column, and then modify the spectral_type column so it becomes an enumerated type that restricts it to one of the following 7 values: 'O', 'B', 'A', 'F', 'G', 'K', and 'M'.
+
+
+```sql
+CREATE TYPE spectral_options AS ENUM ('O', 'B', 'A', 'F', 'G', 'K', 'M');
+
+ALTER TABLE stars 
+DROP CONSTRAINT stars_spectral_type_check;
+
+ALTER TABLE stars
+ALTER COLUMN spectral_type
+TYPE spectral_options
+USING spectral_type::spectral_options;
+```
+
+##
+##
+
+7. We will measure Planetary masses in terms of the mass of Jupiter. As such, the current data type of integer is inappropriate; it is only really useful for planets as large as Jupiter or larger. These days, we know of many extrasolar planets that are smaller than Jupiter, so we need to be able to record fractional parts for the mass. Modify the mass column in the planets table so that it allows fractional masses to any degree of precision required. In addition, make sure the mass is required and positive.
+
+While we're at it, also make the designation column required.
+
+```sql
+ALTER TABLE planets
+ALTER COLUMN mass
+TYPE numeric;
+
+ALTER TABLE planets
+ALTER COLUMN mass
+SET NOT NULL;
+
+ALTER TABLE planets
+ALTER COLUMN designation
+SET NOT NULL;
+
+ALTER TABLE planets
+ADD CHECK (mass > 0.0);
+```
+
+OR as one statement
+
+```sql
+ALTER TABLE planets
+ALTER COLUMN mass TYPE numeric,
+ALTER COLUMN mass SET NOT NULL,
+ADD CHECK (mass > 0.0),
+ALTER COLUMN designation SET NOT NULL;
+```
+
+#
+#
+
+8. Add a `semi_major_axis` column for the semi-major axis of each planet's orbit; the semi-major axis is the average distance from the planet's star as measured in astronomical units (1 AU is the average distance of the Earth from the Sun). 
+
+Use a data type of numeric, and require that each planet have a value for the `semi_major_axis`.
+
+```sql
+ALTER TABLE planets
+ADD COLUMN semi_major_axis numeric NOT NULL;
+```
+
+#
+#
+
+9. Someday in the future, technology will allow us to start observing the moons of extrasolar planets. At that point, we're going to need a moons table in our extrasolar database. For this exercise, your task is to add that table to the database. The table should include the following data:
+
+  - `id`: a unique serial number that auto-increments and serves as a primary key for this table.
+
+  - `designation`: the designation of the moon. We will assume that moon designations will be numbers, with the first moon discovered for each planet being moon 1, the second moon being moon 2, etc. The designation is required.
+    
+  - `semi_major_axis`: the average distance in kilometers from the planet when a moon is farthest from its corresponding planet. This field must be a number greater than 0, but is not required; it may take some time before we are able to measure moon-to-planet distances in extrasolar systems.
+    
+  - `mass`: the mass of the moon measured in terms of Earth Moon masses. This field must be a numeric value greater than 0, but is not required.
+
+Make sure you also specify any foreign keys necessary to tie each moon to other rows in the database.
+
+
+```sql
+CREATE TABLE moons (
+  id serial PRIMARY KEY,
+  designation integer NOT NULL CHECK (designation > 0),
+  semi_major_axis numeric CHECK (semi_major_axis > 0.0),
+  mass numeric CHECK (mass > 0.0),
+  planet_id integer NOT NULL REFERENCES planets (id)
+);
+```
+
+#
+#
+
+10. Delete the extrasolar database. Use the psql console -- don't use the terminal level commands.
+
+Note: you may want to make a backup of your database before you drop it (also called a database dump). You can make a backup like this from the terminal:
