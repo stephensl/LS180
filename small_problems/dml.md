@@ -1,4 +1,4 @@
-# Small Problems Data Manipulation Language
+ # Small Problems Data Manipulation Language
 
 #
 #
@@ -178,3 +178,30 @@ LIMIT 1;
 UPDATE parts SET device_id = 1 WHERE part_number = 7 OR part_number = 8;
 ```
 
+#
+
+10. Our workshop has decided to not make an Accelerometer after all. Delete any data related to "Accelerometer", this includes the parts associated with an Accelerometer.
+
+```sql
+CREATE TABLE parts (
+  id serial PRIMARY KEY,
+  part_number integer NOT NULL UNIQUE,
+  device_id integer REFERENCES devices ON DELETE CASCADE
+);
+```
+
+
+                        Table "public.products"
+    Column     |          Type          |                       Modifiers
+---------------+------------------------+-------------------------------------------------------
+ id            | integer                | not null default nextval('products_id_seq'::regclass)
+ product_name  | character varying(100) | not null
+ supplier_name | character varying(100) |
+ cost          | numeric(6,2)           | not null default 0
+ price         | numeric(6,2)           | not null default 0
+ stock         | integer                | not null default 0
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (id)
+    "products_product_name_key" UNIQUE CONSTRAINT, btree (product_name)
+Check constraints:
+    "price_check" CHECK (price > cost)
