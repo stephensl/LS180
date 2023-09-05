@@ -20,5 +20,11 @@
   - rules about how entities and their attributes relate to each other
 
 
-#### Entity-Relationship Model (Conceptual Schema)
+#### Entity-Relationship Model (Conceptual Schema) ERD
+
+One to one
+
+One to many
+
+Many to many
 
