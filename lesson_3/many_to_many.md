@@ -22,11 +22,3 @@ Should always use `NOT NULL` and `ON DELETE CASCADE` constraints with foreign ke
 
 Should make sure that the combination of foreign keys (book_id, category_id) are UNIQUE. 
   - this ensures that duplicate rows will not be represented in a query. 
-
-
-SELECT categories.name, COUNT(books.id) AS book_count, string_agg(books.title, ', ')
-FROM categories
-JOIN books_categories ON categories.id = books_categories.category_id
-JOIN books ON books.id = books_categories.book_id
-GROUP BY categories.name
-ORDER BY categories.name;
