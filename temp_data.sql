@@ -15062,3 +15062,12 @@ ALTER TABLE ONLY tickets
 -- PostgreSQL database dump complete
 --
 
+
+-- CREATE TABLE films_directors (
+--     film_id integer NOT NULL REFERENCES films (id), 
+--     director_id integer NOT NULL REFERENCeS directors (id)
+-- );
+
+-- INSERT INTO directors_films (film_id, director_id)
+-- VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6),
+--        (7, 3), (8, 7), (9, 8), (10, 4);
