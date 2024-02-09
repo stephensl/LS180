@@ -1,0 +1,32 @@
+repo_name: stephensl/LS180
+report_id: e9484e7213e2e12fec791f31f5ef3865
+version: 0.1
+repo_type: Public
+timestamp: '2024-02-09T19:25:49+00:00'
+requested_by: stephensl
+provider: github
+branch: main
+detected_tools_count: 2
+tools:
+- name: SQL
+  description: It is a domain-specific language used in programming
+  website_url: https://en.wikipedia.org/wiki/SQL
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/2271/default_068d33483bba6b81ee13fbd4dc7aab9780896a54.png
+  detection_source_url: https://github.com/stephensl/LS180/blob/main/grocery.sql
+  detection_source: grocery.sql
+  last_updated_by: Lawton Stephens
+  last_updated_on: 2023-08-21 01:10:34.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/stephensl/LS180
+  detection_source: Repo Metadata
